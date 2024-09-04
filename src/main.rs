@@ -2,6 +2,11 @@
 use rocket_dyn_templates::{Template, context};
 mod sas;
 
+#[get("/api")]
+fn api() -> String {
+    sas::modif()
+}
+
 #[get("/")]
 fn index() -> Template {
     Template::render("index", context!{
@@ -12,6 +17,6 @@ fn index() -> Template {
 #[launch]
 fn rocket() -> _ {
     rocket::build()
-        .mount("/", routes![index])
+        .mount("/", routes![index, api])
         .attach(Template::fairing())
 }
