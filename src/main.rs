@@ -3,20 +3,21 @@ use rocket_dyn_templates::{Template, context};
 mod sas;
 
 #[get("/api")]
-fn api() -> String {
+async fn api() -> String {
     sas::modif()
 }
 
 #[get("/")]
-fn index() -> Template {
+async fn index() -> Template {
     Template::render("index", context!{
         modif: sas::modif()
     })
 }
 
-#[launch]
-fn rocket() -> _ {
-    rocket::build()
+#[shuttle_runtime::main]
+async fn rocket() -> shuttle_rocket::ShuttleRocket {
+    let rocket = rocket::build()
         .mount("/", routes![index, api])
-        .attach(Template::fairing())
+        .attach(Template::fairing());
+    Ok(rocket.into())
 }
